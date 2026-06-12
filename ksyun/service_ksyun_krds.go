@@ -105,7 +105,7 @@ func readKrdsInstance(d *schema.ResourceData, meta interface{}, instanceId strin
 		data = v.(map[string]interface{})
 	}
 	if len(data) == 0 {
-		return data, fmt.Errorf("Krds instance %s not exist ", instanceId)
+		return data, nil
 	}
 	return data, err
 }
@@ -114,6 +114,10 @@ func readAndSetKrdsInstance(d *schema.ResourceData, meta interface{}, isRR bool)
 	data, err := readKrdsInstance(d, meta, "")
 	if err != nil {
 		return err
+	}
+	if len(data) == 0 {
+		d.SetId("")
+		return nil
 	}
 	// check rr or master
 	dbInstanceType := data["DBInstanceType"]
@@ -181,6 +185,13 @@ func readAndSetKrdsInstance(d *schema.ResourceData, meta interface{}, isRR bool)
 		_ = d.Set("force_restart", d.Get("force_restart"))
 	} else {
 		_ = d.Set("force_restart", false)
+	}
+	if dbInstanceClass, ok := data["DBInstanceClass"]; ok {
+		if m, ok := dbInstanceClass.(map[string]interface{}); ok {
+			if v, ok := m["Vcpus"]; ok {
+				_ = d.Set("vcpus", v)
+			}
+		}
 	}
 	return err
 }
@@ -816,6 +827,7 @@ func createKrdsDbInstance(d *schema.ResourceData, meta interface{}) (call ksyunA
 		"force_restart":         {Ignore: true},
 		"availability_zone_1":   {mapping: "AvailabilityZone.1"},
 		"availability_zone_2":   {mapping: "AvailabilityZone.2"},
+		"vcpus":                 {mapping: "Vcpus"},
 	}
 
 	createReq, err := SdkRequestAutoMapping(d, resourceKsyunKrds(), false, transform, nil, SdkReqParameter{
@@ -1419,8 +1431,8 @@ func readAndSetKrdsSecurityGroupRule(d *schema.ResourceData, meta interface{}) (
 			return err
 		}
 	}
-	err = fmt.Errorf("security_group_rule_protocol %s not found in security_group %s", protocol, sgId)
-	return err
+	d.SetId("")
+	return nil
 }
 
 func readKrdsSecurityGroupRules(d *schema.ResourceData, meta interface{}, sgId string) (data map[string]interface{}, err error) {
@@ -1432,6 +1444,12 @@ func readKrdsSecurityGroupRules(d *schema.ResourceData, meta interface{}, sgId s
 		sgId = d.Id()
 	}
 	sg, err = readKrdsSecurityGroup(d, meta, sgId)
+	if err != nil {
+		return data, err
+	}
+	if len(sg) == 0 {
+		return data, nil
+	}
 	data = make(map[string]interface{})
 	rules, err = getSdkValue("SecurityGroupRules", sg)
 	if err != nil {
@@ -1492,6 +1510,10 @@ func readKrdsAndSetSecurityGroup(d *schema.ResourceData, meta interface{}) (err 
 	if err != nil {
 		return err
 	}
+	if len(sg) == 0 {
+		d.SetId("")
+		return nil
+	}
 	extra := map[string]SdkResponseMapping{
 		"SecurityGroupRules": {
 			Field: "security_group_rule",
@@ -1538,7 +1560,7 @@ func readKrdsSecurityGroup(d *schema.ResourceData, meta interface{}, sgId string
 	}
 	sg, err = getSdkValue("Data.SecurityGroups.0", *resp)
 	if err != nil {
-		return data, err
+		return data, nil
 	}
 	data = sg.(map[string]interface{})
 	return data, err

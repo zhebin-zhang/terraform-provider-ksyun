@@ -107,7 +107,7 @@ func readMongodbInstance(d *schema.ResourceData, meta interface{}, instanceId st
 	}
 	mongoDBInstanceResult, err = getSdkValue("MongoDBInstanceResult", *resp)
 	if err != nil {
-		return data, err
+		return data, nil
 	}
 	data = mongoDBInstanceResult.(map[string]interface{})
 	if v, ok := data["InstanceType"]; ok && v.(string) == "Cluster" {
@@ -581,6 +581,10 @@ func readMongodbInstanceCommon(d *schema.ResourceData, meta interface{}, r *sche
 	if err != nil {
 		return err
 	}
+	if len(data) == 0 {
+		d.SetId("")
+		return nil
+	}
 	mappings, err := readMongodbSupportAzMappings(meta)
 	if err != nil {
 		return err
@@ -750,7 +754,8 @@ func readMongodbShardInstanceNode(d *schema.ResourceData, meta interface{}) (dat
 		}
 	}
 	if !exist {
-		return data, extra, fmt.Errorf("mongodb shard instance node %s not found", d.Get("node_id"))
+		d.SetId("")
+		return data, extra, nil
 	}
 	return data, extra, err
 }
