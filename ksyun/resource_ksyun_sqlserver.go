@@ -230,6 +230,10 @@ func resourceKsyunSqlServerRead(d *schema.ResourceData, meta interface{}) error 
 	resp, err := conn.DescribeDBInstances(&req)
 	logger.Debug(logger.AllFormat, action, req, *resp, err)
 	if err != nil {
+		if notFoundError(err) {
+			d.SetId("")
+			return nil
+		}
 		return fmt.Errorf("error on reading Instance(sqlserver) %q, %s", d.Id(), err)
 	}
 
@@ -238,6 +242,10 @@ func resourceKsyunSqlServerRead(d *schema.ResourceData, meta interface{}) error 
 		return fmt.Errorf("error on reading Instance(sqlserver) body %q, %+v", d.Id(), (*resp)["Error"])
 	}
 	instances := bodyData["Instances"].([]interface{})
+	if len(instances) == 0 {
+		d.SetId("")
+		return nil
+	}
 
 	sqlserverIds := make([]string, len(instances))
 	sqlserverMap := make([]map[string]interface{}, len(instances))

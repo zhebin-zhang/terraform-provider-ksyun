@@ -135,7 +135,11 @@ func resourceKsyunKrdsParameterGroupRead(d *schema.ResourceData, meta interface{
 
 	sdkResponse, err := krdsParameterSrv.describeDBParameterGroupById(reqParameters)
 	if err != nil || len(sdkResponse) < 1 {
-		return fmt.Errorf("while query db parameter group have encountered an error, detail: %s", err)
+		if err != nil {
+			return fmt.Errorf("while query db parameter group have encountered an error, detail: %s", err)
+		}
+		d.SetId("")
+		return nil
 	}
 	if err := TransformMapValue2StringWithKey("Parameters", sdkResponse); err != nil {
 		return err
