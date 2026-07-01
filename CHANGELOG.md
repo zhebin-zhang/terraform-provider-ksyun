@@ -99,7 +99,7 @@ BUGFIX：
 - `ksyun_scaling_policy`: 修复读取接口在资源不存在时未正确处理notFoundError的问题
 - `ksyun_scaling_scheduled_task`: 修复读取接口在资源不存在时未正确处理notFoundError的问题
 - `ksyun_kcrs`: 修复读取接口在资源不存在时未正确处理notFoundError的问题
-- `ksyun_kce`: 修复读取接口在资源不存在时未正确处理notFoundError的问题
+- `ksyun_kce`: 修复读取接口在资源不存在时未正确处理notFoundError的问题 
 - `ksyun_kce_worker`: 修复读取接口在资源不存在时未正确处理notFoundError的问题
 
 ## 1.24.7 (Feb 27, 2026)
@@ -221,7 +221,7 @@ IMPROVEMENTS:
 - `ksyun_alb_listener`: 增加TCP, UDP, TCPSSL协议，增加ServerGroupId。兼容默认转发策略
 - `ksyun_alb_backend_server_group`: 支持udp的健康检查请求/响应串，增加4层负载均衡相关参数
 - `ksyun_alb_register_backend_server`: 增加`MasterSlaveType`
-
+  
 ## 1.19.3 (Jun 26, 2025)
 
 IMPROVEMENTS:
@@ -240,7 +240,34 @@ IMPROVEMENTS:
 IMPROVEMENTS:
 
 - `ksyun_kce_cluster`: 新增vk组件参数
+  
+## 1.19.0 (May 19, 2025)
 
+FEATURES:
+
+- `ksyun_kce_cluster`: 增加kce集群管理组件支持`virtual-kubelet`组件
+
+BUGFIX：
+
+- `ksyun_bws_associate`: 修复`ksyun_bws_associate`读取关系时，openapi存在的读取延迟问题。
+- `ksyun_nat`: 兼容openAPI返回的tags字段。
+
+## 1.18.9 (May 13, 2025)
+
+BUGFIX:
+
+- `ksyun_kce_cluster` 修复删除集群时的状态延迟异常
+
+## 1.18.8 (May 12, 2025)
+
+IMPROVEMENTS:
+
+- `ksyun_alb_backend_server_group`: 新增`session`字段，新增`health_check`字段，新增`method`字段
+- `ksyun_kce_cluster` 取消network_type限制，支持calico类型
+
+## 1.18.7 (Apr 16, 2025)
+
+## 1.18.7 (Nov 11, 2025)
 
 FEATURES:
 
