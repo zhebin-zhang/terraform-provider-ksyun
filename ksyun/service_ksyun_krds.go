@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/terraform-providers/terraform-provider-ksyun/logger"
@@ -99,6 +100,9 @@ func readKrdsInstance(d *schema.ResourceData, meta interface{}, instanceId strin
 	}
 	krdsInstanceResults, err = readKrdsInstances(d, meta, req)
 	if err != nil {
+		if isKrdsInstanceNotFoundError(err) {
+			return data, nil
+		}
 		return data, err
 	}
 	for _, v := range krdsInstanceResults {
@@ -108,6 +112,14 @@ func readKrdsInstance(d *schema.ResourceData, meta interface{}, instanceId strin
 		return data, nil
 	}
 	return data, err
+}
+
+func isKrdsInstanceNotFoundError(err error) bool {
+	if ksyunError, ok := err.(awserr.RequestFailure); ok && ksyunError.StatusCode() == 404 {
+		return true
+	}
+	errMsg := strings.ToLower(err.Error())
+	return strings.Contains(errMsg, "not found") || strings.Contains(errMsg, "dbproduct not found")
 }
 
 func readAndSetKrdsInstance(d *schema.ResourceData, meta interface{}, isRR bool) (err error) {
@@ -887,6 +899,7 @@ func createKrdsRrInstance(d *schema.ResourceData, meta interface{}) (call ksyunA
 		"instance_has_eip":       {Ignore: true},
 		"parameters":             {Ignore: true},
 		"force_restart":          {Ignore: true},
+		"vcpus":                  {mapping: "Vcpus"},
 	}
 
 	createReq, err := SdkRequestAutoMapping(d, resourceKsyunKrdsRr(), false, transform, nil, SdkReqParameter{

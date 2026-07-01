@@ -656,7 +656,8 @@ func resourceRedisInstanceRead(d *schema.ResourceData, meta interface{}) error {
 		}
 		return fmt.Errorf("error on reading instance %q, %s", d.Id(), err)
 	}
-	if item, ok = (*resp)["Data"].(map[string]interface{}); !ok {
+	if item, ok = (*resp)["Data"].(map[string]interface{}); !ok || len(item) == 0 {
+		d.SetId("")
 		return nil
 	}
 	// merge some field
