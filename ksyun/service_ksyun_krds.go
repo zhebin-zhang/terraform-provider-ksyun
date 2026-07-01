@@ -1569,6 +1569,9 @@ func readKrdsSecurityGroup(d *schema.ResourceData, meta interface{}, sgId string
 	logger.Debug(logger.ReqFormat, action, req)
 	resp, err = conn.DescribeSecurityGroup(&req)
 	if err != nil {
+		if notFoundError(err) {
+			return data, nil
+		}
 		return data, err
 	}
 	sg, err = getSdkValue("Data.SecurityGroups.0", *resp)
