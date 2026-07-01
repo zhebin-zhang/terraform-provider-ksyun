@@ -1,3 +1,33 @@
+## 1.25.8 (July 01, 2026)
+
+BUGFIX：
+
+- `ksyun_krds`: 修复资源被外部删除后 Read 返回 error 的问题，现在正确清除 state
+- `ksyun_krds_rr`: 修复资源被外部删除后 Read 未正确处理 notFoundError 的问题
+- `ksyun_krds_parameter_group`: 修复资源被外部删除后 Read 返回 error 的问题，现在正确清除 state
+- `data_source_ksyun_krds_parameter_group`: 修复查询结果为空时返回 error 的问题，现在正确返回空结果集
+- `ksyun_sqlserver`: 修复资源被外部删除后 Read 返回 error 或 panic 的问题，现在正确清除 state
+- `ksyun_sqlserver`: 修复 Create/Delete StateRefresh 中类型断言未做安全检查导致潜在 panic 的问题
+- `ksyun_redis_instance`: 修复资源被外部删除后 Read 返回 error 的问题，现在正确清除 state
+- `ksyun_redis_instance_node`: 修复资源被外部删除后 Read 返回 error 的问题，现在正确清除 state
+- `ksyun_redis_security_group`: 修复资源被外部删除后 Read 返回 error 的问题，现在正确清除 state
+- `ksyun_redis_security_group_rule`: 修复资源被外部删除后 Read 返回 error 的问题，现在正确清除 state
+- `ksyun_redis_security_group_allocate`: 修复资源被外部删除后 Read 返回 error 的问题，现在正确清除 state
+- `ksyun_mongodb_instance`: 修复资源被外部删除后 Read 返回 error 的问题，现在正确清除 state
+- `ksyun_mongodb_security_rule`: 修复资源被外部删除后 Read 返回 error 的问题，现在正确清除 state
+- `ksyun_mongodb_shard_instance_node`: 修复资源被外部删除后 Read 返回 error 的问题，现在正确清除 state
+- `ksyun_mongodb_instance`: 扩展 notFoundError 识别范围，支持 "notfound" 和 "实例不存在"
+
+IMPROVEMENTS：
+
+- `ksyun_krds`: 新增 `vcpus` 可选字段，支持创建时指定 CPU 数量
+- `ksyun_redis_instance`: 新增 `duration_unit`、`product_type`、`replica_num`、`separation`、`package_code` 可选字段
+- `ksyun_redis_instance`: `port` 字段改为 Optional + ForceNew，支持创建时自定义端口
+- `ksyun_redis_instance`: `protocol` 字段新增 `7.0` 版本支持，改为 Computed
+- `ksyun_mongodb_instance`: `engine_version` 字段新增 `1.2`、`5.0`、`6.0`、`8.0` 版本支持，默认值从 `3.2` 更新为 `3.6`，移除已下线的 `3.2`
+- `ksyun_mongodb_shard_instance`: `engine_version` 字段新增 `1.2`、`5.0`、`6.0`、`8.0` 版本支持，默认值从 `3.2` 更新为 `3.6`，移除已下线的 `3.2`
+- `ksyun_sqlserver`: `engine_version` schema description 更新为实际支持的版本 `2012sp4,2014sp2,2016sp2,2017`
+
 ## 1.25.5 (April 13, 2026)
 
 IMPROVEMENTS：
@@ -69,7 +99,7 @@ BUGFIX：
 - `ksyun_scaling_policy`: 修复读取接口在资源不存在时未正确处理notFoundError的问题
 - `ksyun_scaling_scheduled_task`: 修复读取接口在资源不存在时未正确处理notFoundError的问题
 - `ksyun_kcrs`: 修复读取接口在资源不存在时未正确处理notFoundError的问题
-- `ksyun_kce`: 修复读取接口在资源不存在时未正确处理notFoundError的问题 
+- `ksyun_kce`: 修复读取接口在资源不存在时未正确处理notFoundError的问题
 - `ksyun_kce_worker`: 修复读取接口在资源不存在时未正确处理notFoundError的问题
 
 ## 1.24.7 (Feb 27, 2026)
@@ -191,7 +221,7 @@ IMPROVEMENTS:
 - `ksyun_alb_listener`: 增加TCP, UDP, TCPSSL协议，增加ServerGroupId。兼容默认转发策略
 - `ksyun_alb_backend_server_group`: 支持udp的健康检查请求/响应串，增加4层负载均衡相关参数
 - `ksyun_alb_register_backend_server`: 增加`MasterSlaveType`
-  
+
 ## 1.19.3 (Jun 26, 2025)
 
 IMPROVEMENTS:
@@ -210,34 +240,7 @@ IMPROVEMENTS:
 IMPROVEMENTS:
 
 - `ksyun_kce_cluster`: 新增vk组件参数
-  
-## 1.19.0 (May 19, 2025)
 
-FEATURES:
-
-- `ksyun_kce_cluster`: 增加kce集群管理组件支持`virtual-kubelet`组件
-
-BUGFIX：
-
-- `ksyun_bws_associate`: 修复`ksyun_bws_associate`读取关系时，openapi存在的读取延迟问题。
-- `ksyun_nat`: 兼容openAPI返回的tags字段。
-
-## 1.18.9 (May 13, 2025)
-
-BUGFIX:
-
-- `ksyun_kce_cluster` 修复删除集群时的状态延迟异常
-
-## 1.18.8 (May 12, 2025)
-
-IMPROVEMENTS:
-
-- `ksyun_alb_backend_server_group`: 新增`session`字段，新增`health_check`字段，新增`method`字段
-- `ksyun_kce_cluster` 取消network_type限制，支持calico类型
-
-## 1.18.7 (Apr 16, 2025)
-
-## 1.18.7 (Nov 11, 2025)
 
 FEATURES:
 
